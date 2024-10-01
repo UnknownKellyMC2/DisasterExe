@@ -7,37 +7,40 @@ local run = game:GetService("RunService")
 
 local Utility = {}
 local Objects = {}
-function Kavo:DraggingEnabled(frame, parent) -- remaked by owner lololololol
+function Kavo:DraggingEnabled(frame, parent)
+        
     parent = parent or frame
-
+    
+    -- stolen from wally or kiriot, kek
     local dragging = false
-    local touchPos, framePos
+    local dragInput, mousePos, framePos
 
-    local function startDrag(input)
-        if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+    frame.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
             dragging = true
-            touchPos = input.Position
+            mousePos = input.Position
             framePos = parent.Position
+            
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
         end
-    end
+    end)
 
-    local function stopDrag(input)
-        if (input.UserInputType == Enum.UserInputType.Touch and input.UserInputState == Enum.UserInputState.End) or
-           (input.UserInputType == Enum.UserInputType.MouseButton1 and input.UserInputState == Enum.UserInputState.End) then
-            dragging = false
+    frame.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            dragInput = input
         end
-    end
+    end)
 
-    local function updateDrag(input)
-        if (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) and dragging then
-            local delta = input.Position - touchPos
-            parent.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+    input.InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
+            local delta = input.Position - mousePos
+            parent.Position  = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
         end
-    end
-
-    frame.InputBegan:Connect(startDrag)
-    frame.InputEnded:Connect(stopDrag)
-    frame.InputChanged:Connect(updateDrag)
+    end)
 end
 
 function Utility:TweenObject(obj, properties, duration, ...)
@@ -287,6 +290,19 @@ function Kavo.CreateLib(kavName, themeList)
         wait(1)
         ScreenGui:Destroy()
     end)
+    
+    local minimize = Instance.new("ImageButton")
+	minimize.Name = "minimize"
+	minimize.Parent = MainHeader
+	minimize.BackgroundTransparency = 1.000
+	minimize.Position = UDim2.new(0.899999976, 0, 0.137999997, 0)
+	minimize.Size = UDim2.new(0, 21, 0, 21)
+	minimize.ZIndex = 2
+	minimize.Image = "rbxassetid://7733997941"
+	minimize.ImageRectOffset = Vector2.new(0, 0)
+	minimize.ImageRectSize = Vector2.new(24, 24)
+	
+	local isMinimized = false
     minimize.MouseButton1Click:Connect(function()
 	    if isMinimized then
 	        -- Restore the GUI
