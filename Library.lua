@@ -200,6 +200,7 @@ function Kavo.CreateLib(kavName, themeList)
     local coverup = Instance.new("Frame")
     local title = Instance.new("TextLabel")
     local close = Instance.new("ImageButton")
+    local minimize = Instance.new("ImageButton")
     local MainSide = Instance.new("Frame")
     local sideCorner = Instance.new("UICorner")
     local coverup_2 = Instance.new("Frame")
@@ -208,7 +209,7 @@ function Kavo.CreateLib(kavName, themeList)
     local pages = Instance.new("Frame")
     local Pages = Instance.new("Folder")
     local infoContainer = Instance.new("Frame")
-
+    
     local blurFrame = Instance.new("Frame")
 
     Kavo:DraggingEnabled(MainHeader, Main)
@@ -291,16 +292,18 @@ function Kavo.CreateLib(kavName, themeList)
         ScreenGui:Destroy()
     end)
     
-    local minimize = Instance.new("ImageButton")
 	minimize.Name = "minimize"
 	minimize.Parent = MainHeader
 	minimize.BackgroundTransparency = 1.000
-	minimize.Position = UDim2.new(0.899999976, 0, 0.137999997, 0)
+	minimize.Position = UDim2.new(0.849999988, 0, 0.137999997, 0)
 	minimize.Size = UDim2.new(0, 21, 0, 21)
 	minimize.ZIndex = 2
 	minimize.Image = "rbxassetid://7733997941"
 	minimize.ImageRectOffset = Vector2.new(0, 0)
 	minimize.ImageRectSize = Vector2.new(24, 24)
+	
+	-- Update the close button position to make room for the minimize button
+	close.Position = UDim2.new(0.949999988, 0, 0.137999997, 0)
 	
 	local isMinimized = false
     minimize.MouseButton1Click:Connect(function()
